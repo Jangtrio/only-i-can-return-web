@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="description" content="회귀: 각성자 협회 — 게이트 방어 WebGL 심사용 빌드">
+  <title>회귀: 각성자 협회 — 게이트 방어</title>
+  <style>
+    :root{color-scheme:dark;--bg:#02050a;--line:#15384b;--gate:#ff4a51;--cyan:#4fd9e2}
+    *{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg)}
+    body{display:grid;place-items:center;font-family:system-ui,"Noto Sans KR",sans-serif;overscroll-behavior:none}
+    /* Fit the complete 1600x900 Unity UI inside any itch.io iframe or fullscreen viewport. */
+    #game{
+      position:relative;
+      width:min(100vw,calc(100vh * 16 / 9));
+      height:min(100vh,calc(100vw * 9 / 16));
+      aspect-ratio:16/9;
+      overflow:hidden;
+      background:#000;
+      box-shadow:0 0 0 1px var(--line),0 0 48px rgba(30,123,153,.18)
+    }
+    #unity-canvas{position:absolute;inset:0;display:block;width:100%;height:100%;outline:0;background:#000;touch-action:none}
+    #loading{position:absolute;inset:0;z-index:2;display:grid;place-content:center;gap:14px;text-align:center;background:#06080e;color:#d3ddec}
+    #bar{width:min(420px,70vw);height:10px;border:1px solid var(--line);background:#111827}
+    #fill{width:0;height:100%;background:linear-gradient(90deg,var(--gate),var(--cyan));transition:width .15s}
+    #status{color:#8797ad;font-size:13px}
+    #retry{display:none;justify-self:center;border:1px solid var(--line);background:#131c2c;color:#d3ddec;padding:8px 16px;cursor:pointer}
+    #retry:hover,#retry:focus-visible{border-color:var(--cyan)}
+    @supports(height:100dvh){
+      #game{width:min(100vw,calc(100dvh * 16 / 9));height:min(100dvh,calc(100vw * 9 / 16))}
+    }
+  </style>
+</head>
+<body>
+  <main id="game" aria-label="회귀: 각성자 협회 게임 화면">
+    <canvas id="unity-canvas" width=1280 height=720 tabindex="0"></canvas>
+    <div id="loading" role="status" aria-live="polite">
+      <div>게임 데이터를 불러오는 중입니다.</div>
+      <div id="bar"><div id="fill"></div></div>
+      <div id="status">0%</div>
+      <button id="retry" type="button">다시 불러오기</button>
+    </div>
+  </main>
+  <script src="Build/WebGL.loader.js"></script>
+  <script>
+    const canvas = document.querySelector('#unity-canvas');
+    const loading = document.querySelector('#loading');
+    const fill = document.querySelector('#fill');
+    const status = document.querySelector('#status');
+    const retry = document.querySelector('#retry');
+    const config = {
+      arguments: [],
+      dataUrl: 'Build/WebGL.data.unityweb',
+      frameworkUrl: 'Build/WebGL.framework.js.unityweb',
+      codeUrl: 'Build/WebGL.wasm.unityweb',
+      streamingAssetsUrl: 'StreamingAssets',
+      companyName: "Seoul Defense",
+      productName: "회귀 각성자 협회",
+      productVersion: "1.0",
+      matchWebGLToCanvasSize: true,
+      devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2)
+    };
+
+    canvas.addEventListener('contextmenu', event => event.preventDefault());
+    canvas.addEventListener('pointerdown', () => canvas.focus(), {passive:true});
+    retry.addEventListener('click', () => window.location.reload());
+
+    createUnityInstance(canvas, config, progress => {
+      const percent = Math.round(progress * 100);
+      fill.style.width = percent + '%';
+      status.textContent = percent + '%';
+    }).then(() => {
+      loading.style.display = 'none';
+      canvas.focus();
+    }).catch(message => {
+      status.textContent = '실행 실패: ' + message;
+      status.style.color = '#ff7b81';
+      retry.style.display = 'block';
+    });
+  </script>
+</body>
+</html>

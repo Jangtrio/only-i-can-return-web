@@ -1,0 +1,9 @@
+회귀: 각성자 협회 — 심사용 WebGL 빌드
+
+실행: index.html이 아닌 배포 URL로 접속하세요.
+조작: 마우스 / 1 등속 / Space 일시정지 / Tab 관전 전환 / Esc 닫기
+2×·4× 배속과 결과 예지는 회귀 코인 강화로 순차 해금됩니다.
+권장: 데스크톱 Chrome 또는 Edge 최신 버전
+
+itch.io 설정: HTML / Embed in page / 960×540 / Scrollbars OFF / Fullscreen button ON
+화면 비율이 다른 기기에서는 게임 전체를 유지하고 남는 영역을 여백으로 표시합니다.
